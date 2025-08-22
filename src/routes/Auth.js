@@ -1,9 +1,12 @@
 import express from 'express';
 import { prisma } from '../prismaClient.js';
 import { successResponse, errorResponse } from '../utils/Responses.js';
-import { validateUser, validateLogin } from '../utils/validation.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { resolve } from 'path';
+import { srcPath } from '../path-helper.js';
+
+const { validateUser, validateLogin } = await import(resolve(srcPath, 'utils', 'validation.js'));
 
 const router = express.Router();
 
