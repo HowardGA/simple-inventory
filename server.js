@@ -11,11 +11,16 @@ import cookieParser from 'cookie-parser';
 dotenv.config();
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+    origin: '*', 
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser()); 
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 4000;
 
 app.get('/', (req, res) => {
     res.send('API para Inventario Sencillo de laboratorios con Node.js, Express y Prisma ORM');
