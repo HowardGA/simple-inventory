@@ -58,11 +58,7 @@ router.post('/login', async (req, res) => {
 
 router.post('/logout', (req, res) => {
     // Clear the JWT cookie
-    res.clearCookie('jwt', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-    });
+    res.clearCookie('jwt', cookieOptions);
 
     successResponse(res, { message: "Logout Exitoso" });
 });
