@@ -11,13 +11,26 @@ router.post('/register', async (req, res) => {
     try {
         const { name, email, password } = validateUser(req.body);
         const hashedPassword = await bcrypt.hash(password, 10);
+        
         try {
             const user = await prisma.user.create({
                 data: { name, email, password: hashedPassword }
             });
+            const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+            res.cookie('jwt', token, {
+                httpOnly: true, 
+                secure: process.env.NODE_ENV === 'production', 
+                sameSite: 'strict', 
+                maxAge: 7 * 24 * 60 * 60 * 1000 
+            });
+
             successResponse(res, { id: user.id, name: user.name, email: user.email });
-        } catch {
-            errorResponse(res, "El usuario ya existe", 400);
+        } catch (e) {
+            if (e.code === 'P2002') {
+                errorResponse(res, "El usuario ya existe", 400);
+            } else {
+                errorResponse(res, "Ocurrió un error en el servidor", 500);
+            }
         }
     } catch (error) {
         errorResponse(res, error.message, 400);
@@ -40,10 +53,21 @@ router.post('/login', async (req, res) => {
         });
 
         // Send a simple success response
-        successResponse(res, { message: "Login successful", user: { id: user.id, name: user.name, email: user.email } });
+        successResponse(res, { message: "Login exitoso", user: { id: user.id, name: user.name, email: user.email } });
     } catch (error) {
         errorResponse(res, error.message, 400);
     }
+});
+
+router.post('/logout', (req, res) => {
+    // Clear the JWT cookie
+    res.clearCookie('jwt', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+    });
+
+    successResponse(res, { message: "Logout Exitoso" });
 });
 
 export default router;
