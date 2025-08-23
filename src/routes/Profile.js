@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get('/me', authenticateToken, async (req, res) => {
     try {
+        console.log(req.user.userId)
         const user = await prisma.user.findUnique({ where: { id: req.user.userId } });
         successResponse(res, user);
     } catch (error) {

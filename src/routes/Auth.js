@@ -6,6 +6,15 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const router = express.Router();
+const isProduction = process.env.NODE_ENV === 'production';
+const cookieOptions = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'None' : 'Lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    domain: isProduction ? '.onrender.com' : undefined
+};
+
 
 router.post('/register', async (req, res) => {
     try {
@@ -17,12 +26,7 @@ router.post('/register', async (req, res) => {
                 data: { name, email, password: hashedPassword }
             });
             const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-            res.cookie('jwt', token, {
-                httpOnly: true, 
-                secure: process.env.NODE_ENV === 'production', 
-                sameSite: 'lax', 
-                maxAge: 7 * 24 * 60 * 60 * 1000 
-            });
+            res.cookie('jwt', token, cookieOptions);
 
             successResponse(res, { id: user.id, name: user.name, email: user.email });
         } catch (e) {
@@ -45,13 +49,8 @@ router.post('/login', async (req, res) => {
         const valid = await bcrypt.compare(password, user.password);
         if (!valid) return errorResponse(res, "Credenciales invalidas", 401);
         const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-        res.cookie('jwt', token, {
-            httpOnly: true, 
-            secure: process.env.NODE_ENV === 'production', 
-            sameSite: 'lax', 
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        });
-
+        res.cookie('jwt', token, cookieOptions);
+        
         // Send a simple success response
         successResponse(res, { message: "Login exitoso", user: { id: user.id, name: user.name, email: user.email } });
     } catch (error) {
