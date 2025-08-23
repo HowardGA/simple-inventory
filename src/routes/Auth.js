@@ -31,7 +31,7 @@ router.post('/login', async (req, res) => {
         if (!user) return errorResponse(res, "Usuario no encontrado", 404);
         const valid = await bcrypt.compare(password, user.password);
         if (!valid) return errorResponse(res, "Credenciales invalidas", 401);
-        const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
+        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
         res.cookie('jwt', token, {
             httpOnly: true, 
             secure: process.env.NODE_ENV === 'production', 
