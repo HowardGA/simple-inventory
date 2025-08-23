@@ -6,13 +6,11 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const router = express.Router();
-const isProduction = process.env.NODE_ENV === 'production';
 const cookieOptions = {
     httpOnly: true,
     secure: true,
     sameSite: 'None',
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    domain: '.onrender.com'
 };
 
 
