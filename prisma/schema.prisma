@@ -36,6 +36,7 @@ model Product {
   itemStock    Int
   itemImage   String
   categoryId  Int?
+  itemSku    String @default("123456789") 
   category    Category? @relation(fields: [categoryId], references: [id])
   userId      Int
   user        User     @relation(fields: [userId], references: [id])

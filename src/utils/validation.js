@@ -1,6 +1,6 @@
 export const validateProduct = (product) => {
-    const { itemName, itemDescription, itemPrice, itemStock, categoryId, itemImage } = product;
-    if (!itemName || !itemDescription || !itemPrice || !itemStock || !categoryId || !itemImage) {
+    const { itemName, itemDescription, itemPrice, itemStock, categoryId, itemImage, itemSku } = product;
+    if (!itemName || !itemDescription || !itemPrice || !itemStock || !categoryId || !itemImage || !itemSku) {
         throw new Error('Todos los campos son obligatorios');
     }
     if (typeof itemPrice !== 'number' || itemPrice <= 0) {
@@ -9,7 +9,7 @@ export const validateProduct = (product) => {
     if (typeof itemStock !== 'number' || itemStock < 0) {
         throw new Error('El stock debe ser un numero no negativo');
     }
-    return ({ itemName, itemDescription, itemPrice, itemStock, categoryId, itemImage });
+    return ({ itemName, itemDescription, itemPrice, itemStock, categoryId, itemImage, itemSku });
 }
 
 export const validateUser = (user) => {

@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post('/', authenticateToken, async (req, res) => {
     try {
-        const { itemName, itemDescription, itemPrice, itemStock, categoryId, itemImage } = validateProduct(req.body);
+        const { itemName, itemDescription, itemPrice, itemStock, categoryId, itemImage, itemSku } = validateProduct(req.body);
         const product = await prisma.product.create({
             data: { 
                 itemName, 
@@ -17,6 +17,7 @@ router.post('/', authenticateToken, async (req, res) => {
                 itemStock, 
                 itemImage,
                 categoryId, 
+                itemSku,
                 userId: req.user.userId 
             }
         });
