@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/', authenticateToken, async (req, res) => {
     try {
         const totalProducts = await prisma.product.count();
-        const lowStock = await prisma.product.findMany({ where: { quantity: { lt: 5 } } });
+        const lowStock = await prisma.product.findMany({ where: { itemStock: { lt: 5 } } });
         const totalCategories = await prisma.category.count();
         const totalUsers = await prisma.user.count();
         const dashboardData = {
