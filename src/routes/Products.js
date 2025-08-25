@@ -29,7 +29,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
 router.get('/', authenticateToken, async (req, res) => {
     try{
-        const products = await prisma.product.findMany({ include: { category: true } });
+        const products = await prisma.product.findMany({ include: { category: true, user: true } });
         successResponse(res, products);
     } catch (error) {
         errorResponse(res, error.message, 500);
